@@ -1,11 +1,6 @@
 package main
 
-import (
-	"machine"
-	"time"
-)
-
-// CalibrationModule handles the calibration of sensors and movement parameters
+// CalibrationModule handles sensor and motor calibration at startup.
 type CalibrationModule struct {
 	robot           *Robot
 	sensorModule    *SensorModule
@@ -13,7 +8,7 @@ type CalibrationModule struct {
 	calibrated      bool
 }
 
-// NewCalibrationModule creates a new calibration module instance
+// NewCalibrationModule creates a CalibrationModule with the given dependencies.
 func NewCalibrationModule(robot *Robot, sensorModule *SensorModule, motorController *MotorController) *CalibrationModule {
 	return &CalibrationModule{
 		robot:           robot,
@@ -23,86 +18,50 @@ func NewCalibrationModule(robot *Robot, sensorModule *SensorModule, motorControl
 	}
 }
 
-// CalibrateSensors runs the sensor calibration process
-func (cm *CalibrationModule) CalibrateSensors() {
-	cm.robot.BlinkLED(2) // Indicate calibration start
-	
-	println("Starting sensor calibration...")
-	
-	// Calibrate ultrasonic sensor - measure baseline distance
-	println("Measuring baseline distance...")
-	for i := 0; i < 10; i++ {
-		distance := cm.sensorModule.ReadUltrasonicDistance()
-		println("Ultrasonic distance:", distance)
-		time.Sleep(time.Millisecond * 500)
-	}
-	
-	// Calibrate IR sensors - measure baseline values over different surfaces
-	println("Measuring IR sensor baselines...")
-	for i := 0; i < 10; i++ {
-		irValues := cm.sensorModule.ReadIRSensors()
-		for sensorName, value := range irValues {
-			println("IR sensor", sensorName, "value:", value)
-		}
-		time.Sleep(time.Millisecond * 500)
-	}
-	
-	println("Sensor calibration complete!")
-	cm.robot.Beep(time.Millisecond * 1000) // Long beep to indicate completion
-	cm.calibrated = true
-}
-
-// CalibrateMotors runs the motor calibration process
-func (cm *CalibrationModule) CalibrateMotors() {
-	cm.robot.BlinkLED(3) // Indicate motor calibration start
-	
-	println("Starting motor calibration...")
-	
-	// Test each movement direction
-	movements := []struct {
-		name string
-		dir  int
-	}{
-		{"Forward", MOVE_FORWARD},
-		{"Backward", MOVE_BACKWARD},
-		{"Left", TURN_LEFT},
-		{"Right", TURN_RIGHT},
-	}
-	
-	for _, move := range movements {
-		println("Testing", move.name, "movement...")
-		cm.motorController.SetDirection(move.dir)
-		time.Sleep(time.Millisecond * 1000)
-		cm.motorController.SetDirection(STOP)
-		time.Sleep(time.Millisecond * 500)
-	}
-	
-	println("Motor calibration complete!")
-	cm.robot.Beep(time.Millisecond * 500) // Medium beep
-}
-
-// CalibrateComplete runs full calibration
-func (cm *CalibrationModule) CalibrateComplete() {
-	println("Starting complete calibration...")
-	
-	// Calibrate sensors first
-	cm.CalibrateSensors()
-	
-	// Then calibrate motors
-	cm.CalibrateMotors()
-	
-	println("Complete calibration finished!")
-	cm.robot.BlinkLED(5) // Indicate completion
-}
-
-// IsCalibrated returns whether the system has been calibrated
+// IsCalibrated returns whether calibration has completed.
 func (cm *CalibrationModule) IsCalibrated() bool {
 	return cm.calibrated
 }
 
-// AdjustThresholds allows runtime adjustment of sensor thresholds
-func (cm *CalibrationModule) AdjustThresholds(obstacleDist, edgeDetect int) {
-	// In a real implementation, we would adjust global constants
-	// For now, we'll just print the new values
-	println("Adjusting thresholds - obstacle distance:", obstacleDist, "edge detection:", edgeDetect)
+// CalibrateSensors runs sensor calibration and logs baseline values.
+func (cm *CalibrationModule) CalibrateSensors() {
+	cm.robot.BlinkLED(2)
+	debugPrint("Starting sensor calibration...")
+	debugPrint("Measuring baseline distance...")
+	distance := cm.sensorModule.ReadUltrasonicDistance()
+	debugPrint("Ultrasonic distance:", distance)
+	busyWait(20000)
+	debugPrint("Measuring IR sensor baselines...")
+	irValues := cm.sensorModule.ReadIRSensors()
+	for i, value := range irValues {
+		debugPrint("IR sensor", i, "edge:", value)
+	}
+	busyWait(20000)
+	debugPrint("Sensor calibration complete!")
+	cm.robot.BeepLoops(10000)
+	cm.calibrated = true
+}
+
+// CalibrateMotors tests each movement direction.
+func (cm *CalibrationModule) CalibrateMotors() {
+	cm.robot.BlinkLED(3)
+	debugPrint("Starting motor calibration...")
+	for _, dir := range []int{MOVE_FORWARD, MOVE_BACKWARD, TURN_LEFT, TURN_RIGHT} {
+		debugPrint("Testing movement...")
+		cm.motorController.SetDirection(dir)
+		busyWait(50000)
+		cm.motorController.SetDirection(STOP)
+		busyWait(20000)
+	}
+	debugPrint("Motor calibration complete!")
+	cm.robot.BeepLoops(5000)
+}
+
+// CalibrateComplete runs full sensor and motor calibration.
+func (cm *CalibrationModule) CalibrateComplete() {
+	debugPrint("Starting complete calibration...")
+	cm.CalibrateSensors()
+	cm.CalibrateMotors()
+	debugPrint("Complete calibration finished!")
+	cm.robot.BlinkLED(5)
 }
