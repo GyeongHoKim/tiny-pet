@@ -1,6 +1,8 @@
 # Binaries
 *.bin
 *.hex
+*.elf
+tiny-pet
 *.uf2
 *.gba
 *.nro
