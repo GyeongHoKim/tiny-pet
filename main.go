@@ -1,6 +1,7 @@
 package main
 
 import (
+	"machine"
 	"time"
 )
 
@@ -13,9 +14,15 @@ func main() {
 	behaviorPatterns := NewBehaviorPatterns(robot.statusLed, robot.buzzer)
 	calibrationModule := NewCalibrationModule(robot, sensorModule, motorController)
 
+	machine.I2C0.Configure(machine.I2CConfig{
+		Frequency: 400000, // 400 KHz; SDA=A4, SCL=A5 are hardwired on ATmega328P
+	})
+	displayModule := NewDisplayModule(machine.I2C0)
+
 	robot.Initialize()
 	calibrationModule.CalibrateComplete()
 	navigationModule.SetBehaviorMode(RANDOM_WALK_MODE)
+	displayModule.ShowExpression(EXPR_HAPPY)
 
 	var lastState int = -1
 	for {
@@ -24,8 +31,10 @@ func main() {
 		currentState := navigationModule.GetCurrentState()
 		if currentState != lastState {
 			behaviorPatterns.IndicateStateChange(currentState)
+			displayModule.ShowStateExpression(currentState)
 			lastState = currentState
 		}
+		displayModule.UpdateAnimation()
 
 		time.Sleep(time.Millisecond * 100)
 	}
