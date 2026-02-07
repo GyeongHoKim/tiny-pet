@@ -1,11 +1,6 @@
 package main
 
-import (
-	"machine"
-	"time"
-)
-
-// Movement directions
+// Movement directions.
 const (
 	MOVE_FORWARD = iota
 	MOVE_BACKWARD
@@ -14,128 +9,72 @@ const (
 	STOP
 )
 
-// Movement speeds
-const (
-	SPEED_SLOW = iota
-	SPEED_MEDIUM
-	SPEED_FAST
-)
-
-// MotorController manages the robot's movement
+// MotorController manages differential drive movement.
 type MotorController struct {
-	leftMotor  *Motor
-	rightMotor *Motor
+	leftMotor        *Motor
+	rightMotor       *Motor
 	currentDirection int
-	currentSpeed     int
 }
 
-// NewMotorController creates a new motor controller instance
+// NewMotorController creates a MotorController with the given motors.
 func NewMotorController(leftMotor, rightMotor *Motor) *MotorController {
 	return &MotorController{
-		leftMotor:  leftMotor,
-		rightMotor: rightMotor,
+		leftMotor:        leftMotor,
+		rightMotor:       rightMotor,
 		currentDirection: STOP,
-		currentSpeed:     SPEED_MEDIUM,
 	}
 }
 
-// SetDirection sets the movement direction
+// SetDirection sets the robot's movement direction.
 func (mc *MotorController) SetDirection(direction int) {
 	mc.currentDirection = direction
-	
+
 	switch direction {
 	case MOVE_FORWARD:
-		mc.moveForward()
+		mc.leftMotor.SetSpeed(true)
+		mc.rightMotor.SetSpeed(true)
 	case MOVE_BACKWARD:
-		mc.moveBackward()
+		mc.leftMotor.SetSpeed(false)
+		mc.rightMotor.SetSpeed(false)
 	case TURN_LEFT:
-		mc.turnLeft()
+		mc.leftMotor.SetSpeed(false)
+		mc.rightMotor.SetSpeed(true)
 	case TURN_RIGHT:
-		mc.turnRight()
+		mc.leftMotor.SetSpeed(true)
+		mc.rightMotor.SetSpeed(false)
 	case STOP:
-		mc.stop()
+		mc.leftMotor.Stop()
+		mc.rightMotor.Stop()
 	}
 }
 
-// SetSpeed sets the movement speed
-func (mc *MotorController) SetSpeed(speed int) {
-	mc.currentSpeed = speed
-	// In a real implementation with PWM, we would adjust the speed here
-	// For now, we'll just store the speed value
+func busyWait(loops int) {
+	for i := 0; i < loops; i++ {
+	}
 }
 
-// moveForward moves the robot forward
-func (mc *MotorController) moveForward() {
-	mc.leftMotor.SetSpeed(true)  // Forward
-	mc.rightMotor.SetSpeed(true) // Forward
-}
-
-// moveBackward moves the robot backward
-func (mc *MotorController) moveBackward() {
-	mc.leftMotor.SetSpeed(false) // Backward (reverse polarity)
-	mc.rightMotor.SetSpeed(false) // Backward (reverse polarity)
-}
-
-// turnLeft turns the robot left
-func (mc *MotorController) turnLeft() {
-	mc.leftMotor.SetSpeed(false) // Left backward
-	mc.rightMotor.SetSpeed(true) // Right forward
-}
-
-// turnRight turns the robot right
-func (mc *MotorController) turnRight() {
-	mc.leftMotor.SetSpeed(true)  // Left forward
-	mc.rightMotor.SetSpeed(false) // Right backward
-}
-
-// stop stops the robot
-func (mc *MotorController) stop() {
-	mc.leftMotor.Stop()
-	mc.rightMotor.Stop()
-}
-
-// MoveForTime moves the robot in a direction for a specified time
-func (mc *MotorController) MoveForTime(direction int, duration time.Duration) {
+// MoveForLoops moves in a direction for a specified number of loop iterations.
+func (mc *MotorController) MoveForLoops(direction int, loops int) {
 	mc.SetDirection(direction)
-	time.Sleep(duration)
+	busyWait(loops)
 	mc.SetDirection(STOP)
 }
 
-// TurnForTime turns the robot for a specified time
-func (mc *MotorController) TurnForTime(direction int, duration time.Duration) {
+// TurnForLoops turns the robot for a specified number of loop iterations.
+func (mc *MotorController) TurnForLoops(direction int, loops int) {
 	if direction != TURN_LEFT && direction != TURN_RIGHT {
-		return // Only allow turning directions
+		return
 	}
 	mc.SetDirection(direction)
-	time.Sleep(duration)
+	busyWait(loops)
 	mc.SetDirection(STOP)
 }
 
-// GetCurrentDirection returns the current movement direction
-func (mc *MotorController) GetCurrentDirection() int {
-	return mc.currentDirection
-}
-
-// GetCurrentSpeed returns the current speed
-func (mc *MotorController) GetCurrentSpeed() int {
-	return mc.currentSpeed
-}
-
-// MoveRandomly moves the robot in a random pattern
-func (mc *MotorController) MoveRandomly() {
-	// Choose a random direction
-	// In a real implementation, we'd use a proper random function
-	// For TinyGo, we'll simulate randomness using time
-	seed := time.Now().UnixNano() % 4
-	direction := int(seed)
-	
-	// Limit to valid directions
+// MoveRandomly moves the robot in a pseudo-random direction based on seed.
+func (mc *MotorController) MoveRandomly(seed uint8) {
+	direction := int(seed % 4)
 	if direction > TURN_RIGHT {
 		direction = MOVE_FORWARD
 	}
-	
-	// Move in the chosen direction for a random duration (between 500ms and 2s)
-	duration := time.Duration(500+(time.Now().UnixNano()%1500)) * time.Millisecond
-	
-	mc.MoveForTime(direction, duration)
+	mc.MoveForLoops(direction, 5000)
 }
