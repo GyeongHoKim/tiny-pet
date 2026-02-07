@@ -1,6 +1,6 @@
 # Tiny Pet
 
-Small desk pet robot (TinyGo): random movement, obstacle avoidance (ultrasonic), edge avoidance (IR). Runs on Arduino Uno/Nano.
+Small desk pet robot (TinyGo): random movement, obstacle avoidance (ultrasonic), edge avoidance (IR), OLED face expressions. Runs on Arduino Uno/Nano.
 
 ## Requirements
 
@@ -11,7 +11,8 @@ Small desk pet robot (TinyGo): random movement, obstacle avoidance (ultrasonic),
 
 - **Random movement** — Drives forward and occasionally turns at random to wander on a flat surface.
 - **Obstacle avoidance** — Ultrasonic sensor (HC-SR04) detects obstacles ahead; robot stops, reverses, then turns away. Threshold: `OBSTACLE_DISTANCE_THRESHOLD` in `sensors.go`.
-- **Edge detection** — Four IR sensors (A1–A4) detect desk edges; robot stops, reverses, and turns to avoid falling. Threshold: `EDGE_DETECTION_THRESHOLD` in `sensors.go`.
+- **Edge detection** — Two front IR sensors (A1–A2) detect desk edges; robot stops, reverses, and turns to avoid falling. Threshold: `EDGE_DETECTION_THRESHOLD` in `sensors.go`.
+- **OLED face** — SSD1306 128x64 I2C OLED shows expressive faces: happy (moving), surprised (obstacle), scared (edge), excited (interacting), neutral (idle), with periodic blink animation.
 - **Interaction (optional)** — Status LED (D13) and buzzer (D8) indicate current state (moving, avoiding obstacle, avoiding edge). Calibration on startup is indicated by LED blinks and beeps.
 
 ## Parts list
@@ -26,7 +27,8 @@ Small desk pet robot (TinyGo): random movement, obstacle avoidance (ultrasonic),
 |-----------|-----|------|
 | DC gear motors + motor driver | 2 motors, 1 driver | Driver with logic-level inputs (e.g. L298N, TB6612). Arduino pins → driver IN1/IN2; motor power from separate supply. |
 | Ultrasonic distance sensor | 1 | HC-SR04 or compatible. Trig + Echo (digital). |
-| IR sensors (analog) | 4 | Analog output to A1–A4. Lower ADC = edge (e.g. TCRT5000-style). |
+| IR sensors (analog) | 2 | Analog output to A1–A2 (front). Lower ADC = edge (e.g. TCRT5000-style). |
+| SSD1306 OLED display | 1 | 128x64, I2C (addr 0x3C). Connects to A4 (SDA), A5 (SCL). |
 | Power supply | 1 | 5 V for Uno/Nano (USB or regulated). For battery: step-up to 5 V or USB power bank. |
 | Wheels | 2 | To fit motor shafts (e.g. 40–65 mm). |
 | Caster wheel | 1 | Front or rear, for balance. |
@@ -44,7 +46,8 @@ Small desk pet robot (TinyGo): random movement, obstacle avoidance (ultrasonic),
 ```
 D5, D6  → Motor driver (left, right). Do not power motors from Arduino 5 V.
 D7, A0  → Ultrasonic Trig, Echo (HC-SR04)
-A1–A4   → IR edge sensors (analog). Lower ADC = edge.
+A1–A2   → IR edge sensors (analog, front only). Lower ADC = edge.
+A4, A5  → SSD1306 OLED (I2C SDA, SCL). Hardware I2C on ATmega328P.
 D13, D8 → Optional: LED, Buzzer
 ```
 
@@ -95,6 +98,8 @@ Wire → power 5 V → flash. On startup: short calibration (LED/beep). Then it 
 | `sensors.go` | `SensorModule` — ultrasonic, IR, thresholds |
 | `navigation.go` | `NavigationModule` — state machine, behavior mode |
 | `behaviors.go` | `BehaviorPatterns` — LED and buzzer feedback |
+| `display.go` | `DisplayModule` — SSD1306 OLED face expressions |
+| `faces.go` | Procedural face drawing (helpers + 6 expressions) |
 | `calibration.go` | `CalibrationModule` — sensor/motor calibration |
 | `internal/navlogic/` | Pure state logic (no hardware); unit-testable |
 

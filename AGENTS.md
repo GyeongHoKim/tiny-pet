@@ -4,7 +4,7 @@ This file provides guidance to AI agents when working with code in this reposito
 
 ## Project Overview
 
-TinyGo-based desk pet robot firmware for Arduino Uno/Nano. Uses ultrasonic (HC-SR04) for obstacle avoidance and IR sensors (A1-A4) for edge detection. Requires TinyGo toolchain.
+TinyGo-based desk pet robot firmware for Arduino Uno/Nano. Uses ultrasonic (HC-SR04) for obstacle avoidance, IR sensors (A1-A2) for edge detection, and SSD1306 OLED (I2C, A4/A5) for face expressions. Requires TinyGo toolchain.
 
 ## Build Commands
 
@@ -25,6 +25,7 @@ To set port explicitly: `make flash PORT=/dev/cu.usbmodem14101` (macOS) or `PORT
 **Module dependency flow:**
 ```
 main.go → Robot → SensorModule, MotorController → NavigationModule → BehaviorPatterns
+                                                                   → DisplayModule (faces.go)
                                                 → CalibrationModule
 ```
 
@@ -41,7 +42,7 @@ main.go → Robot → SensorModule, MotorController → NavigationModule → Beh
 ## Key Constants
 
 - **Thresholds** (`sensors.go`): `OBSTACLE_DISTANCE_THRESHOLD` (cm), `EDGE_DETECTION_THRESHOLD` (ADC value)
-- **Pins** (`hardware.go`): Motor pins D5/D6, ultrasonic D7/A0, IR sensors A1-A4, LED D13, buzzer D8
+- **Pins** (`hardware.go`): Motor pins D5/D6, ultrasonic D7/A0, IR sensors A1-A2 (front), I2C OLED A4 (SDA)/A5 (SCL), LED D13, buzzer D8
 
 ## Firmware Size Constraints
 
