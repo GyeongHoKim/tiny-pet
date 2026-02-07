@@ -108,7 +108,9 @@ Wire → power 5 V → flash. On startup: short calibration (LED/beep). Then it 
 Run firmware under simavr to check that the program starts and the main loop runs. Sensor and motor I/O are simulated (default values), so behavior will not match real hardware.
 
 ```bash
-brew install simavr   # macOS; or install simavr for your OS
+# macOS: simavr is in the osx-cross/avr tap (not in default Homebrew)
+brew tap osx-cross/avr
+brew install simavr
 make run
 ```
 
