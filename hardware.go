@@ -13,8 +13,8 @@ const (
 	ULTRA_ECHO_PIN     = machine.ADC0
 	IR_FRONT_LEFT_PIN  = machine.ADC1
 	IR_FRONT_RIGHT_PIN = machine.ADC2
-	IR_REAR_LEFT_PIN   = machine.ADC3
-	IR_REAR_RIGHT_PIN  = machine.ADC4
+	DISPLAY_SDA_PIN    = machine.ADC4 // I2C SDA (shared with hardware I2C0)
+	DISPLAY_SCL_PIN    = machine.ADC5 // I2C SCL (shared with hardware I2C0)
 	STATUS_LED_PIN     = machine.D13
 	BUZZER_PIN         = machine.D8
 )
@@ -23,8 +23,6 @@ const (
 const (
 	IR_FRONT_LEFT = iota
 	IR_FRONT_RIGHT
-	IR_REAR_LEFT
-	IR_REAR_RIGHT
 	IR_SENSOR_COUNT
 )
 
@@ -84,8 +82,6 @@ func NewRobot() *Robot {
 	irPins := [IR_SENSOR_COUNT]machine.Pin{
 		IR_FRONT_LEFT_PIN,
 		IR_FRONT_RIGHT_PIN,
-		IR_REAR_LEFT_PIN,
-		IR_REAR_RIGHT_PIN,
 	}
 	for i, pin := range irPins {
 		robot.irSensors[i] = machine.ADC{Pin: pin}
