@@ -1,9 +1,8 @@
-// Package navlogic implements pure state transition logic for the Tiny Pet
-// navigation state machine. It has no dependency on machine or hardware, so
-// it can be unit-tested with the standard Go toolchain (go test).
+// Package navlogic implements pure state transition logic for navigation.
+// It has no hardware dependencies and can be unit-tested with go test.
 package navlogic
 
-// Robot navigation states. Values must stay in sync with navigation.go usage.
+// Navigation states.
 const (
 	StateIdle = iota
 	StateMoving
@@ -12,14 +11,11 @@ const (
 	StateInteracting
 )
 
-// NextStateFromSensors returns the next navigation state based on the current
-// state and sensor readings. It encodes only the sensor-driven transitions
-// from IDLE and MOVING; avoidance states transition to MOVING after physical
-// actions (handled in the main package).
-// Edge takes precedence over obstacle when both are detected.
+// NextStateFromSensors returns the next state based on sensor readings.
+// Edge detection takes precedence over obstacle detection.
 func NextStateFromSensors(currentState int, obstacleDetected, edgeDetected bool) int {
 	switch currentState {
-	case StateIdle:
+	case StateIdle, StateMoving:
 		if edgeDetected {
 			return StateEdgeAvoidance
 		}
@@ -27,16 +23,6 @@ func NextStateFromSensors(currentState int, obstacleDetected, edgeDetected bool)
 			return StateObstacleAvoidance
 		}
 		return StateMoving
-
-	case StateMoving:
-		if edgeDetected {
-			return StateEdgeAvoidance
-		}
-		if obstacleDetected {
-			return StateObstacleAvoidance
-		}
-		return StateMoving
-
 	default:
 		return currentState
 	}
