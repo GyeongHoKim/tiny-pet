@@ -52,13 +52,32 @@ Pin constants: `hardware.go`. Thresholds: `sensors.go` (`OBSTACLE_DISTANCE_THRES
 
 ## Build & flash
 
+Use the [Makefile](Makefile) for build, flash, format, and tests. Run `make help` for all targets.
+
+| Command | Description |
+|--------|-------------|
+| `make build` | Build for Arduino Uno → `firmware.hex` |
+| `make build-nano` | Build for Arduino Nano |
+| `make flash` | Flash Uno to board (PORT auto-detected on macOS) |
+| `make flash-nano` | Flash Nano to board |
+| `make fmt` | Format Go code |
+| `make tidy` | `go mod tidy` |
+| `make test` | Run unit tests |
+| `make run` | Run in emulator (no board) |
+| `make clean` | Remove `firmware.hex` |
+
+Examples:
+
 ```bash
-go mod tidy
-tinygo build -o firmware.hex -target arduino .          # Uno
-tinygo flash -target arduino -port /dev/cu.usbmodem* . # set port: ls /dev/cu.* (macOS), COM* (Windows)
+make build                    # Uno
+make build-nano flash-nano    # Nano: build then flash
+make flash PORT=/dev/cu.usbmodem14101   # macOS, set port explicitly
+make flash PORT=COM3                    # Windows
 ```
 
-Nano: use `-target arduino-nano`.
+### Firmware size (Arduino Uno/Nano 32KB flash)
+
+The Makefile applies [TinyGo optimization flags](https://tinygo.org/docs/guides/optimizing-binaries/) (`-scheduler=none`, `-gc=leaking`). Calibration `println` output is gated by a `debug` build tag so release builds use a no-op and save space. The firmware may still slightly exceed 32KB on Uno/Nano; if the build reports overflow, you can build with `-tags=debug` for development (serial output) or consider a board with more flash.
 
 ## Run
 
@@ -85,7 +104,7 @@ Run firmware under simavr to check that the program starts and the main loop run
 
 ```bash
 brew install simavr   # macOS; or install simavr for your OS
-tinygo run -target=arduino-nano .
+make run
 ```
 
 ### Unit tests
@@ -93,7 +112,7 @@ tinygo run -target=arduino-nano .
 Navigation state logic only (sensor inputs → next state). Uses the standard Go toolchain; no TinyGo or board needed.
 
 ```bash
-go test ./internal/navlogic/... -v
+make test
 ```
 
 ### Tuning
