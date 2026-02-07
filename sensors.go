@@ -2,24 +2,26 @@ package main
 
 import (
 	"machine"
-	"time"
+
+	"github.com/GyeongHoKim/tiny-pet/internal/navlogic"
 )
 
-// Constants for sensor thresholds
+// Sensor thresholds.
 const (
-	OBSTACLE_DISTANCE_THRESHOLD = 20 // cm - anything closer is considered an obstacle
-	EDGE_DETECTION_THRESHOLD    = 500 // analog value - below this means edge detected
+	OBSTACLE_DISTANCE_THRESHOLD = 20
+	EDGE_DETECTION_THRESHOLD    = 500
+	ULTRASONIC_TIMEOUT_LOOPS    = 10000
 )
 
-// SensorModule handles all sensor readings
+// SensorModule handles ultrasonic and IR sensor readings.
 type SensorModule struct {
 	ultraTrig machine.Pin
 	ultraEcho machine.Pin
-	irSensors map[string]machine.ADC
+	irSensors *[IR_SENSOR_COUNT]machine.ADC
 }
 
-// NewSensorModule creates a new sensor module instance
-func NewSensorModule(ultraTrig, ultraEcho machine.Pin, irSensors map[string]machine.ADC) *SensorModule {
+// NewSensorModule creates a SensorModule with the given pins.
+func NewSensorModule(ultraTrig, ultraEcho machine.Pin, irSensors *[IR_SENSOR_COUNT]machine.ADC) *SensorModule {
 	return &SensorModule{
 		ultraTrig: ultraTrig,
 		ultraEcho: ultraEcho,
@@ -27,81 +29,54 @@ func NewSensorModule(ultraTrig, ultraEcho machine.Pin, irSensors map[string]mach
 	}
 }
 
-// ReadUltrasonicDistance measures distance using HC-SR04 ultrasonic sensor
+// ReadUltrasonicDistance measures distance using HC-SR04.
+// Returns distance in cm, or -1 on timeout.
 func (s *SensorModule) ReadUltrasonicDistance() int {
-	// Send trigger pulse
 	s.ultraTrig.High()
-	time.Sleep(time.Microsecond * 10)
+	for i := 0; i < 160; i++ {
+	}
 	s.ultraTrig.Low()
 
-	// Measure echo pulse duration
-	start := time.Now()
-	timeout := time.Now().Add(time.Millisecond * 100) // Safety timeout
-	
-	for !s.ultraEcho.Get() && time.Now().Before(timeout) {
-		// Wait for echo to go HIGH
+	count := 0
+	for !s.ultraEcho.Get() {
+		count++
+		if count > ULTRASONIC_TIMEOUT_LOOPS {
+			return -1
+		}
 	}
-	
-	if time.Now().After(timeout) {
-		return -1 // Timeout occurred
+
+	echoCount := 0
+	for s.ultraEcho.Get() {
+		echoCount++
+		if echoCount > ULTRASONIC_TIMEOUT_LOOPS {
+			return -1
+		}
 	}
-	
-	echoStart := time.Now()
-	for s.ultraEcho.Get() && time.Now().Before(timeout) {
-		// Wait for echo to go LOW
-	}
-	
-	duration := time.Since(echoStart)
-	
-	// Calculate distance in cm (speed of sound = 343 m/s)
-	// Distance = (duration * speed of sound) / 2
-	// Convert microseconds to seconds and meters to centimeters
-	distance := int((float64(duration.Microseconds()) * 343.0 / 10000.0) / 2.0)
-	
-	return distance
+
+	return navlogic.EchoCountToDistanceCm(echoCount)
 }
 
-// ReadIRSensors reads all IR sensors to detect edges
-func (s *SensorModule) ReadIRSensors() map[string]bool {
-	results := make(map[string]bool)
-	
-	for name, sensor := range s.irSensors {
-		value := sensor.Get()
-		// If the value is below the threshold, we've detected an edge
-		results[name] = value < EDGE_DETECTION_THRESHOLD
-	}
-	
-	return results
-}
-
-// IsObstacleDetected checks if there's an obstacle in front
+// IsObstacleDetected returns true if an obstacle is within threshold distance.
 func (s *SensorModule) IsObstacleDetected() bool {
 	distance := s.ReadUltrasonicDistance()
-	if distance == -1 {
-		// If we got a timeout, assume there's no obstacle
-		return false
-	}
-	return distance < OBSTACLE_DISTANCE_THRESHOLD
+	return navlogic.IsWithinThreshold(distance, OBSTACLE_DISTANCE_THRESHOLD)
 }
 
-// IsEdgeDetected checks if any IR sensor detects an edge
+// IsEdgeDetected returns true if any IR sensor detects an edge.
 func (s *SensorModule) IsEdgeDetected() bool {
-	edgeResults := s.ReadIRSensors()
-	
-	// Check if any of the edge sensors detect an edge
-	for _, isEdge := range edgeResults {
-		if isEdge {
+	for i := 0; i < IR_SENSOR_COUNT; i++ {
+		if s.irSensors[i].Get() < EDGE_DETECTION_THRESHOLD {
 			return true
 		}
 	}
-	
 	return false
 }
 
-// GetAllSensorData gets all sensor readings at once
-func (s *SensorModule) GetAllSensorData() (int, map[string]bool) {
-	distance := s.ReadUltrasonicDistance()
-	edges := s.ReadIRSensors()
-	
-	return distance, edges
+// ReadIRSensors returns edge detection status for each IR sensor.
+func (s *SensorModule) ReadIRSensors() [IR_SENSOR_COUNT]bool {
+	var results [IR_SENSOR_COUNT]bool
+	for i := 0; i < IR_SENSOR_COUNT; i++ {
+		results[i] = s.irSensors[i].Get() < EDGE_DETECTION_THRESHOLD
+	}
+	return results
 }
