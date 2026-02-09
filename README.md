@@ -25,13 +25,14 @@ Small desk pet robot (TinyGo): random movement, obstacle avoidance (ultrasonic),
 ### Required
 | Component | Qty | Spec |
 |-----------|-----|------|
-| DC gear motors + motor driver | 2 motors, 1 driver | Driver with logic-level inputs (e.g. L298N, TB6612). Arduino pins → driver IN1/IN2; motor power from separate supply. |
+| Mini L298N motor driver | 1 | H-bridge, 4 logic pins (IN1–IN4). ENA/ENB jumper → HIGH. Motor power from separate supply. |
+| DC gear motors | 2 | 3–6 V DC gear motor (17–68 RPM range). |
+| Steel gear 65T (wheels) | 2 | Press-fit on motor shaft, acts as wheel. |
+| Copper wire frame | — | 1 mm (structural) + 0.7 mm (detail). Forms the body/chassis. |
 | Ultrasonic distance sensor | 1 | HC-SR04 or compatible. Trig + Echo (digital). |
 | IR sensors (analog) | 2 | Analog output to A1–A2 (front). Lower ADC = edge (e.g. TCRT5000-style). |
 | SSD1306 OLED display | 1 | I2C (addr 0x3C). A4 (SDA), A5 (SCL). See **Recommended display** below. |
 | Power supply | 1 | 5 V for Uno/Nano (USB or regulated). For battery: step-up to 5 V or USB power bank. |
-| Wheels | 2 | To fit motor shafts (e.g. 40–65 mm). |
-| Caster wheel | 1 | Front or rear, for balance. |
 
 ### Optional
 | Component | Pin in code |
@@ -55,7 +56,8 @@ We support Uno/Nano (2KB SRAM) only. If you use a 128×64 OLED on them, the face
 ## Wiring (Arduino pins)
 
 ```
-D5, D6  → Motor driver (left, right). Do not power motors from Arduino 5 V.
+D5, D4  → Mini L298N IN1, IN2 (left motor).  H-bridge: fwd/rev/stop.
+D6, D9  → Mini L298N IN3, IN4 (right motor). ENA/ENB jumper → HIGH.
 D7, A0  → Ultrasonic Trig, Echo (HC-SR04)
 A1–A2   → IR edge sensors (analog, front only). Lower ADC = edge.
 A4, A5  → SSD1306 OLED (I2C SDA, SCL). Hardware I2C on ATmega328P.

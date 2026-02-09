@@ -42,7 +42,7 @@ main.go → Robot → SensorModule, MotorController → NavigationModule → Beh
 ## Key Constants
 
 - **Thresholds** (`sensors.go`): `OBSTACLE_DISTANCE_THRESHOLD` (cm), `EDGE_DETECTION_THRESHOLD` (ADC value)
-- **Pins** (`hardware.go`): Motor pins D5/D6, ultrasonic D7/A0, IR sensors A1-A2 (front), I2C OLED A4 (SDA)/A5 (SCL), LED D13, buzzer D8
+- **Pins** (`hardware.go`): Motor pins D5/D4 (left IN1/IN2), D6/D9 (right IN1/IN2) via Mini L298N H-bridge, ultrasonic D7/A0, IR sensors A1-A2 (front), I2C OLED A4 (SDA)/A5 (SCL), LED D13, buzzer D8
 
 ## Firmware Size Constraints
 

@@ -7,8 +7,10 @@ import (
 
 // Pin constants for Arduino Uno/Nano.
 const (
-	LEFT_MOTOR_PIN     = machine.D5
-	RIGHT_MOTOR_PIN    = machine.D6
+	LEFT_MOTOR_IN1     = machine.D5 // Mini L298N IN1 (left)
+	LEFT_MOTOR_IN2     = machine.D4 // Mini L298N IN2 (left)
+	RIGHT_MOTOR_IN1    = machine.D6 // Mini L298N IN3 (right)
+	RIGHT_MOTOR_IN2    = machine.D9 // Mini L298N IN4 (right)
 	ULTRA_TRIG_PIN     = machine.D7
 	ULTRA_ECHO_PIN     = machine.ADC0
 	IR_FRONT_LEFT_PIN  = machine.ADC1
@@ -26,30 +28,36 @@ const (
 	IR_SENSOR_COUNT
 )
 
-// Motor represents a DC motor controlled by a single pin.
+// Motor represents a DC motor controlled via H-bridge (Mini L298N IN1/IN2).
 type Motor struct {
-	pin machine.Pin
+	in1 machine.Pin
+	in2 machine.Pin
 }
 
-// NewMotor creates and configures a motor on the given pin.
-func NewMotor(pin machine.Pin) *Motor {
-	motor := &Motor{pin: pin}
-	motor.pin.Configure(machine.PinConfig{Mode: machine.PinOutput})
+// NewMotor creates and configures a motor with two H-bridge control pins.
+func NewMotor(in1, in2 machine.Pin) *Motor {
+	motor := &Motor{in1: in1, in2: in2}
+	motor.in1.Configure(machine.PinConfig{Mode: machine.PinOutput})
+	motor.in2.Configure(machine.PinConfig{Mode: machine.PinOutput})
 	return motor
 }
 
-// SetSpeed sets the motor output (true=HIGH, false=LOW).
-func (m *Motor) SetSpeed(speed bool) {
-	if speed {
-		m.pin.High()
-	} else {
-		m.pin.Low()
-	}
+// Forward drives the motor forward (in1 HIGH, in2 LOW).
+func (m *Motor) Forward() {
+	m.in1.High()
+	m.in2.Low()
 }
 
-// Stop sets the motor output to LOW.
+// Backward drives the motor in reverse (in1 LOW, in2 HIGH).
+func (m *Motor) Backward() {
+	m.in1.Low()
+	m.in2.High()
+}
+
+// Stop brakes the motor (in1 LOW, in2 LOW).
 func (m *Motor) Stop() {
-	m.pin.Low()
+	m.in1.Low()
+	m.in2.Low()
 }
 
 // Robot represents the Tiny Pet hardware.
@@ -66,8 +74,8 @@ type Robot struct {
 // NewRobot initializes all hardware and returns a configured Robot.
 func NewRobot() *Robot {
 	robot := &Robot{
-		leftMotor:  NewMotor(LEFT_MOTOR_PIN),
-		rightMotor: NewMotor(RIGHT_MOTOR_PIN),
+		leftMotor:  NewMotor(LEFT_MOTOR_IN1, LEFT_MOTOR_IN2),
+		rightMotor: NewMotor(RIGHT_MOTOR_IN1, RIGHT_MOTOR_IN2),
 		ultraTrig:  ULTRA_TRIG_PIN,
 		ultraEcho:  ULTRA_ECHO_PIN,
 		statusLed:  STATUS_LED_PIN,

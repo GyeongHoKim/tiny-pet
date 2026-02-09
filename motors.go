@@ -31,17 +31,17 @@ func (mc *MotorController) SetDirection(direction int) {
 
 	switch direction {
 	case MOVE_FORWARD:
-		mc.leftMotor.SetSpeed(true)
-		mc.rightMotor.SetSpeed(true)
+		mc.leftMotor.Forward()
+		mc.rightMotor.Forward()
 	case MOVE_BACKWARD:
-		mc.leftMotor.SetSpeed(false)
-		mc.rightMotor.SetSpeed(false)
+		mc.leftMotor.Backward()
+		mc.rightMotor.Backward()
 	case TURN_LEFT:
-		mc.leftMotor.SetSpeed(false)
-		mc.rightMotor.SetSpeed(true)
+		mc.leftMotor.Backward()
+		mc.rightMotor.Forward()
 	case TURN_RIGHT:
-		mc.leftMotor.SetSpeed(true)
-		mc.rightMotor.SetSpeed(false)
+		mc.leftMotor.Forward()
+		mc.rightMotor.Backward()
 	case STOP:
 		mc.leftMotor.Stop()
 		mc.rightMotor.Stop()
