@@ -87,9 +87,9 @@ Use the [Makefile](Makefile) for build, flash, format, and tests. Run `make help
 
 | Command | Description |
 |--------|-------------|
-| `make build` | Build for Arduino Uno → `firmware.hex` |
+| `make build` | Build for Blue Pill (default) → `firmware_bluepill.elf` |
+| `make build-uno` | Build for Arduino Uno → `firmware.hex` |
 | `make build-nano` | Build for Arduino Nano |
-| `make build-bluepill` | Build for STM32 Blue Pill → `firmware_bluepill.elf` |
 | `make flash` | Flash Uno to board (PORT auto-detected on macOS) |
 | `make flash-nano` | Flash Nano to board |
 | `make flash-bluepill` | Flash Blue Pill (ST-Link v2 + OpenOCD) |
@@ -102,9 +102,10 @@ Use the [Makefile](Makefile) for build, flash, format, and tests. Run `make help
 Examples:
 
 ```bash
-make build                    # Uno
+make build                    # Blue Pill (default)
+make build-uno                # Uno
 make build-nano flash-nano    # Nano: build then flash
-make build-bluepill flash-bluepill   # Blue Pill (ST-Link v2 connected)
+make flash-bluepill           # Blue Pill (ST-Link v2 connected)
 make flash PORT=/dev/cu.usbmodem14101   # macOS, set port explicitly
 make flash PORT=COM3                    # Windows
 ```

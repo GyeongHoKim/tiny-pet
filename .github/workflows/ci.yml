@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+
+      - name: Install TinyGo
+        run: |
+          TINYGO_VERSION="0.40.1"
+          wget "https://github.com/tinygo-org/tinygo/releases/download/v${TINYGO_VERSION}/tinygo_${TINYGO_VERSION}_amd64.deb"
+          sudo dpkg -i tinygo_*_amd64.deb
+          tinygo version
+
+      - name: Test
+        run: make test
+
+      - name: Build (Blue Pill)
+        run: make build
+
+      - name: Build (Arduino Uno)
+        run: make build-uno
+
+      - name: Build (Arduino Nano)
+        run: make build-nano

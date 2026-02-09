@@ -18,9 +18,11 @@ FIRMWARE_BLUEPILL := firmware_bluepill.elf
 # Optional: TINYGO_FLAGS="-scheduler=none" to keep GC if leaking is undesirable.
 TINYGO_FLAGS ?= -scheduler=none -gc=leaking
 
-# --- Build ---
-build build-uno: TARGET = arduino
-build build-uno:
+# --- Build (default: Blue Pill) ---
+build: build-bluepill
+
+build-uno: TARGET = arduino
+build-uno:
 	go mod tidy
 	tinygo build $(TINYGO_FLAGS) -o $(FIRMWARE) -target $(TARGET) .
 
@@ -97,9 +99,10 @@ help:
 	@echo "Tiny Pet — build, flash, format"
 	@echo ""
 	@echo "Targets:"
-	@echo "  build, build-uno   Build for Arduino Uno (default), output: $(FIRMWARE)"
+	@echo "  build              Build for STM32 Blue Pill (default), output: $(FIRMWARE_BLUEPILL)"
+	@echo "  build-uno          Build for Arduino Uno, output: $(FIRMWARE)"
 	@echo "  build-nano         Build for Arduino Nano"
-	@echo "  build-bluepill     Build for STM32 Blue Pill, output: $(FIRMWARE_BLUEPILL)"
+	@echo "  build-bluepill     Same as build (Blue Pill)"
 	@echo "  flash              Flash Uno (PORT= auto-detected; on Windows uses pwsh, set PORT=COM3 if needed)"
 	@echo "  flash-nano         Flash Nano (same PORT= as flash)"
 	@echo "  flash-bluepill     Flash Blue Pill (ST-Link v2 + OpenOCD required)"

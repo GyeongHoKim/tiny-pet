@@ -9,9 +9,9 @@ TinyGo-based desk pet robot firmware for Arduino Uno/Nano and STM32 Blue Pill. U
 ## Build Commands
 
 ```bash
-make build          # Build for Arduino Uno → firmware.hex
+make build          # Build for Blue Pill (default) → firmware_bluepill.elf
+make build-uno      # Build for Arduino Uno → firmware.hex
 make build-nano     # Build for Arduino Nano
-make build-bluepill # Build for STM32 Blue Pill → firmware_bluepill.elf
 make flash          # Flash to Uno (auto-detects port on macOS/Linux)
 make flash-nano     # Flash to Nano
 make flash-bluepill # Flash to Blue Pill (ST-Link v2 + OpenOCD required)
