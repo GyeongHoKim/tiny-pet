@@ -1,5 +1,7 @@
 # Tiny Pet
 
+![Demo](./demo.png)
+
 Small desk pet robot (TinyGo): random movement, obstacle avoidance (ultrasonic), edge avoidance (IR), OLED face expressions. Runs on Arduino Uno/Nano or STM32 Blue Pill.
 
 ## Requirements
@@ -18,39 +20,42 @@ Small desk pet robot (TinyGo): random movement, obstacle avoidance (ultrasonic),
 ## Parts list
 
 ### Board
-| Item | Note |
-|------|------|
-| Arduino Uno or Arduino Nano | Uno: target `arduino`. Nano: target `arduino-nano`. 5 V. |
+
+| Item                          | Note                                                                     |
+| ----------------------------- | ------------------------------------------------------------------------ |
+| Arduino Uno or Arduino Nano   | Uno: target `arduino`. Nano: target `arduino-nano`. 5 V.                 |
 | STM32 Blue Pill (STM32F103C8) | Target `bluepill`. 3.3 V. Low-cost option; requires ST-Link v2 to flash. |
 
 ### Required
-| Component | Qty | Spec |
-|-----------|-----|------|
-| Mini L298N motor driver | 1 | H-bridge, 4 logic pins (IN1–IN4). ENA/ENB jumper → HIGH. Motor power from separate supply. |
-| DC gear motors | 2 | 3–6 V DC gear motor (17–68 RPM range). |
-| Steel gear 65T (wheels) | 2 | Press-fit on motor shaft, acts as wheel. |
-| Copper wire frame | — | 1 mm (structural) + 0.7 mm (detail). Forms the body/chassis. |
-| Ultrasonic distance sensor | 1 | HC-SR04 or compatible. Trig + Echo (digital). |
-| IR sensors (analog) | 2 | Analog output to A1–A2 (front). Lower ADC = edge (e.g. TCRT5000-style). |
-| SSD1306 OLED display | 1 | I2C (addr 0x3C). A4 (SDA), A5 (SCL). See **Recommended display** below. |
-| Power supply | 1 | 5 V for Uno/Nano (USB or regulated). For battery: step-up to 5 V or USB power bank. |
+
+| Component                  | Qty | Spec                                                                                       |
+| -------------------------- | --- | ------------------------------------------------------------------------------------------ |
+| Mini L298N motor driver    | 1   | H-bridge, 4 logic pins (IN1–IN4). ENA/ENB jumper → HIGH. Motor power from separate supply. |
+| DC gear motors             | 2   | 3–6 V DC gear motor (17–68 RPM range).                                                     |
+| Steel gear 65T (wheels)    | 2   | Press-fit on motor shaft, acts as wheel.                                                   |
+| Copper wire frame          | —   | 1 mm (structural) + 0.7 mm (detail). Forms the body/chassis.                               |
+| Ultrasonic distance sensor | 1   | HC-SR04 or compatible. Trig + Echo (digital).                                              |
+| IR sensors (analog)        | 2   | Analog output to A1–A2 (front). Lower ADC = edge (e.g. TCRT5000-style).                    |
+| SSD1306 OLED display       | 1   | I2C (addr 0x3C). A4 (SDA), A5 (SCL). See **Recommended display** below.                    |
+| Power supply               | 1   | 5 V for Uno/Nano (USB or regulated). For battery: step-up to 5 V or USB power bank.        |
 
 ### Optional
-| Component | Pin in code |
-|-----------|-------------|
-| Status LED | D13 (often built-in) |
-| Buzzer | D8 (other leg GND) |
-| MPU6050 (I2C) | SDA, SCL |
-| Button | Free digital pin (not in current code) |
+
+| Component     | Pin in code                            |
+| ------------- | -------------------------------------- |
+| Status LED    | D13 (often built-in)                   |
+| Buzzer        | D8 (other leg GND)                     |
+| MPU6050 (I2C) | SDA, SCL                               |
+| Button        | Free digital pin (not in current code) |
 
 ### Recommended display (fits 2KB SRAM)
 
 **Use a 128×32 I2C OLED.** Firmware uses a 512-byte buffer; the face fills the screen.
 
-| Product | Spec | Note |
-|--------|------|------|
+| Product                                                                                   | Spec             | Note                               |
+| ----------------------------------------------------------------------------------------- | ---------------- | ---------------------------------- |
 | [Adafruit 4440 – Monochrome 0.91" 128×32 I2C OLED](https://www.adafruit.com/product/4440) | 128×32, I2C 0x3C | STEMMA QT / Qwiic; 4-pin. ~$12.50. |
-| Generic 0.91" 128×32 SSD1306 I2C | 128×32, I2C 0x3C | Many clones; ensure I2C (not SPI). |
+| Generic 0.91" 128×32 SSD1306 I2C                                                          | 128×32, I2C 0x3C | Many clones; ensure I2C (not SPI). |
 
 We support Uno/Nano (2KB SRAM) only. If you use a 128×64 OLED on them, the face is drawn in the **top half** only.
 
@@ -85,19 +90,19 @@ Flash: connect ST-Link v2 to Blue Pill SWD (SWIO, SWCLK, 3V3, GND), then `make f
 
 Use the [Makefile](Makefile) for build, flash, format, and tests. Run `make help` for all targets.
 
-| Command | Description |
-|--------|-------------|
-| `make build` | Build for Blue Pill (default) → `firmware_bluepill.elf` |
-| `make build-uno` | Build for Arduino Uno → `firmware.hex` |
-| `make build-nano` | Build for Arduino Nano |
-| `make flash` | Flash Uno to board (PORT auto-detected on macOS) |
-| `make flash-nano` | Flash Nano to board |
-| `make flash-bluepill` | Flash Blue Pill (ST-Link v2 + OpenOCD) |
-| `make fmt` | Format Go code |
-| `make tidy` | `go mod tidy` |
-| `make test` | Run unit tests |
-| `make run` | Run in emulator (no board) |
-| `make clean` | Remove firmware artifacts |
+| Command               | Description                                             |
+| --------------------- | ------------------------------------------------------- |
+| `make build`          | Build for Blue Pill (default) → `firmware_bluepill.elf` |
+| `make build-uno`      | Build for Arduino Uno → `firmware.hex`                  |
+| `make build-nano`     | Build for Arduino Nano                                  |
+| `make flash`          | Flash Uno to board (PORT auto-detected on macOS)        |
+| `make flash-nano`     | Flash Nano to board                                     |
+| `make flash-bluepill` | Flash Blue Pill (ST-Link v2 + OpenOCD)                  |
+| `make fmt`            | Format Go code                                          |
+| `make tidy`           | `go mod tidy`                                           |
+| `make test`           | Run unit tests                                          |
+| `make run`            | Run in emulator (no board)                              |
+| `make clean`          | Remove firmware artifacts                               |
 
 Examples:
 
@@ -122,18 +127,18 @@ Wire → power 5 V → flash. On startup: short calibration (LED/beep). Then it 
 
 ### Project layout
 
-| Path | Description |
-|------|-------------|
-| `main.go` | Entry point, main loop, module wiring |
-| `hardware_arduino.go` / `hardware_bluepill.go` | Pin constants, `Motor`, `Robot`, board init (build tag selects) |
-| `motors.go` | `MotorController` — direction, speed, timed moves |
-| `sensors.go` / `sensors_bluepill.go` | `SensorModule` — ultrasonic, IR, thresholds (Blue Pill uses time-based ultrasonic) |
-| `navigation.go` | `NavigationModule` — state machine, behavior mode |
-| `behaviors.go` | `BehaviorPatterns` — LED and buzzer feedback |
-| `display.go` | `DisplayModule` — SSD1306 OLED face expressions |
-| `faces.go` | Procedural face drawing (helpers + 6 expressions) |
-| `calibration.go` | `CalibrationModule` — sensor/motor calibration |
-| `internal/navlogic/` | Pure state logic (no hardware); unit-testable |
+| Path                                           | Description                                                                        |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `main.go`                                      | Entry point, main loop, module wiring                                              |
+| `hardware_arduino.go` / `hardware_bluepill.go` | Pin constants, `Motor`, `Robot`, board init (build tag selects)                    |
+| `motors.go`                                    | `MotorController` — direction, speed, timed moves                                  |
+| `sensors.go` / `sensors_bluepill.go`           | `SensorModule` — ultrasonic, IR, thresholds (Blue Pill uses time-based ultrasonic) |
+| `navigation.go`                                | `NavigationModule` — state machine, behavior mode                                  |
+| `behaviors.go`                                 | `BehaviorPatterns` — LED and buzzer feedback                                       |
+| `display.go`                                   | `DisplayModule` — SSD1306 OLED face expressions                                    |
+| `faces.go`                                     | Procedural face drawing (helpers + 6 expressions)                                  |
+| `calibration.go`                               | `CalibrationModule` — sensor/motor calibration                                     |
+| `internal/navlogic/`                           | Pure state logic (no hardware); unit-testable                                      |
 
 ### Emulator (no board)
 
