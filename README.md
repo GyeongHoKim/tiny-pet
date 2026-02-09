@@ -28,7 +28,7 @@ Small desk pet robot (TinyGo): random movement, obstacle avoidance (ultrasonic),
 | DC gear motors + motor driver | 2 motors, 1 driver | Driver with logic-level inputs (e.g. L298N, TB6612). Arduino pins → driver IN1/IN2; motor power from separate supply. |
 | Ultrasonic distance sensor | 1 | HC-SR04 or compatible. Trig + Echo (digital). |
 | IR sensors (analog) | 2 | Analog output to A1–A2 (front). Lower ADC = edge (e.g. TCRT5000-style). |
-| SSD1306 OLED display | 1 | 128x64, I2C (addr 0x3C). Connects to A4 (SDA), A5 (SCL). |
+| SSD1306 OLED display | 1 | I2C (addr 0x3C). A4 (SDA), A5 (SCL). See **Recommended display** below. |
 | Power supply | 1 | 5 V for Uno/Nano (USB or regulated). For battery: step-up to 5 V or USB power bank. |
 | Wheels | 2 | To fit motor shafts (e.g. 40–65 mm). |
 | Caster wheel | 1 | Front or rear, for balance. |
@@ -40,6 +40,17 @@ Small desk pet robot (TinyGo): random movement, obstacle avoidance (ultrasonic),
 | Buzzer | D8 (other leg GND) |
 | MPU6050 (I2C) | SDA, SCL |
 | Button | Free digital pin (not in current code) |
+
+### Recommended display (fits 2KB SRAM)
+
+**Use a 128×32 I2C OLED.** Firmware uses a 512-byte buffer; the face fills the screen.
+
+| Product | Spec | Note |
+|--------|------|------|
+| [Adafruit 4440 – Monochrome 0.91" 128×32 I2C OLED](https://www.adafruit.com/product/4440) | 128×32, I2C 0x3C | STEMMA QT / Qwiic; 4-pin. ~$12.50. |
+| Generic 0.91" 128×32 SSD1306 I2C | 128×32, I2C 0x3C | Many clones; ensure I2C (not SPI). |
+
+We support Uno/Nano (2KB SRAM) only. If you use a 128×64 OLED on them, the face is drawn in the **top half** only.
 
 ## Wiring (Arduino pins)
 

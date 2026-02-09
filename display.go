@@ -37,9 +37,10 @@ func NewDisplayModule(bus *machine.I2C) *DisplayModule {
 		device:      ssd1306.NewI2C(bus),
 		currentExpr: EXPR_NEUTRAL,
 	}
+	// 128x32: 512-byte buffer to fit 2KB SRAM (Uno/Nano).
 	dm.device.Configure(ssd1306.Config{
 		Width:   128,
-		Height:  64,
+		Height:  32,
 		Address: 0x3C,
 	})
 	dm.device.ClearDisplay()

@@ -58,95 +58,78 @@ func setCircle(dev *ssd1306.Device, cx, cy, r int16) {
 	}
 }
 
-// Face layout constants (128x64 screen).
+// Face layout for 128x32 (Uno/Nano 2KB SRAM).
 const (
 	eyeLeftX  = 40
 	eyeRightX = 88
-	eyeY      = 22
+	eyeY      = 11
 	mouthCX   = 64
-	mouthY    = 48
+	mouthY    = 24
 )
 
 // drawNeutralFace draws half-closed horizontal line eyes and a small straight mouth.
 func drawNeutralFace(dev *ssd1306.Device) {
-	// Half-closed eyes: short horizontal bars
-	setFillRect(dev, eyeLeftX-8, eyeY-1, 16, 3)
-	setFillRect(dev, eyeRightX-8, eyeY-1, 16, 3)
-	// Small straight mouth
-	setFillRect(dev, mouthCX-10, mouthY, 20, 2)
+	setFillRect(dev, eyeLeftX-4, eyeY-1, 8, 2)
+	setFillRect(dev, eyeRightX-4, eyeY-1, 8, 2)
+	setFillRect(dev, mouthCX-5, mouthY, 10, 1)
 }
 
 // drawHappyFace draws round open eyes and a curved smile.
 func drawHappyFace(dev *ssd1306.Device) {
-	// Round open eyes
-	setFillCircle(dev, eyeLeftX, eyeY, 7)
-	setFillCircle(dev, eyeRightX, eyeY, 7)
-	// Curved smile (parabola opening downward in screen coords)
-	for x := int16(mouthCX - 14); x <= mouthCX+14; x++ {
+	setFillCircle(dev, eyeLeftX, eyeY, 4)
+	setFillCircle(dev, eyeRightX, eyeY, 4)
+	for x := int16(mouthCX - 7); x <= mouthCX+7; x++ {
 		dx := x - mouthCX
-		dy := dx * dx / 28 // gentle curve
+		dy := dx * dx / 14
 		dev.SetPixel(x, mouthY+dy, white)
-		dev.SetPixel(x, mouthY+dy+1, white) // 2px thick
 	}
 }
 
 // drawSurprisedFace draws large circle-outline eyes and an O-shaped mouth.
 func drawSurprisedFace(dev *ssd1306.Device) {
-	// Large open circle eyes
-	setCircle(dev, eyeLeftX, eyeY, 9)
-	setCircle(dev, eyeLeftX, eyeY, 8)
-	setCircle(dev, eyeRightX, eyeY, 9)
-	setCircle(dev, eyeRightX, eyeY, 8)
-	// O-shaped mouth
-	setCircle(dev, mouthCX, mouthY+2, 5)
-	setCircle(dev, mouthCX, mouthY+2, 4)
+	setCircle(dev, eyeLeftX, eyeY, 5)
+	setCircle(dev, eyeLeftX, eyeY, 4)
+	setCircle(dev, eyeRightX, eyeY, 5)
+	setCircle(dev, eyeRightX, eyeY, 4)
+	setCircle(dev, mouthCX, mouthY+1, 3)
+	setCircle(dev, mouthCX, mouthY+1, 2)
 }
 
 // drawScaredFace draws large circle eyes with tiny pupils and a frown.
 func drawScaredFace(dev *ssd1306.Device) {
-	// Large circle outline eyes
-	setCircle(dev, eyeLeftX, eyeY, 9)
-	setCircle(dev, eyeLeftX, eyeY, 8)
-	setCircle(dev, eyeRightX, eyeY, 9)
-	setCircle(dev, eyeRightX, eyeY, 8)
-	// Tiny pupils
-	setFillCircle(dev, eyeLeftX, eyeY, 2)
-	setFillCircle(dev, eyeRightX, eyeY, 2)
-	// Frown (inverted parabola)
-	for x := int16(mouthCX - 14); x <= mouthCX+14; x++ {
+	setCircle(dev, eyeLeftX, eyeY, 5)
+	setCircle(dev, eyeLeftX, eyeY, 4)
+	setCircle(dev, eyeRightX, eyeY, 5)
+	setCircle(dev, eyeRightX, eyeY, 4)
+	setFillCircle(dev, eyeLeftX, eyeY, 1)
+	setFillCircle(dev, eyeRightX, eyeY, 1)
+	for x := int16(mouthCX - 7); x <= mouthCX+7; x++ {
 		dx := x - mouthCX
-		dy := -(dx * dx / 28)
-		dev.SetPixel(x, mouthY+4+dy, white)
-		dev.SetPixel(x, mouthY+4+dy+1, white)
+		dy := -(dx * dx / 14)
+		dev.SetPixel(x, mouthY+2+dy, white)
 	}
 }
 
 // drawExcitedFace draws round eyes with sparkle crosses and a wide smile.
 func drawExcitedFace(dev *ssd1306.Device) {
-	// Round eyes
-	setFillCircle(dev, eyeLeftX, eyeY, 7)
-	setFillCircle(dev, eyeRightX, eyeY, 7)
-	// Sparkle crosses on each eye
+	setFillCircle(dev, eyeLeftX, eyeY, 4)
+	setFillCircle(dev, eyeRightX, eyeY, 4)
 	for _, cx := range [2]int16{eyeLeftX, eyeRightX} {
-		setFillRect(dev, cx-1, eyeY-12, 3, 5) // vertical top
-		setFillRect(dev, cx-1, eyeY+8, 3, 5)  // vertical bottom
-		setFillRect(dev, cx-12, eyeY-1, 5, 3)  // horizontal left
-		setFillRect(dev, cx+8, eyeY-1, 5, 3)   // horizontal right
+		setFillRect(dev, cx-1, eyeY-6, 2, 3)
+		setFillRect(dev, cx-1, eyeY+4, 2, 3)
+		setFillRect(dev, cx-6, eyeY-1, 3, 2)
+		setFillRect(dev, cx+4, eyeY-1, 3, 2)
 	}
-	// Wide smile
-	for x := int16(mouthCX - 18); x <= mouthCX+18; x++ {
+	for x := int16(mouthCX - 9); x <= mouthCX+9; x++ {
 		dx := x - mouthCX
-		dy := dx * dx / 40
+		dy := dx * dx / 20
 		dev.SetPixel(x, mouthY+dy, white)
-		dev.SetPixel(x, mouthY+dy+1, white)
 	}
 }
 
 // drawBlinkFace draws thin closed-eye lines and a small mouth (for blink animation).
 func drawBlinkFace(dev *ssd1306.Device) {
-	// Closed eyes: thin horizontal lines
-	setHLine(dev, eyeLeftX-8, eyeY, 16)
-	setHLine(dev, eyeRightX-8, eyeY, 16)
-	// Small straight mouth
-	setFillRect(dev, mouthCX-10, mouthY, 20, 2)
+	setHLine(dev, eyeLeftX-4, eyeY, 8)
+	setHLine(dev, eyeRightX-4, eyeY, 8)
+	setFillRect(dev, mouthCX-5, mouthY, 10, 1)
 }
