@@ -1,6 +1,5 @@
 package main
 
-// Movement directions.
 const (
 	MOVE_FORWARD = iota
 	MOVE_BACKWARD
@@ -9,14 +8,12 @@ const (
 	STOP
 )
 
-// MotorController manages differential drive movement.
 type MotorController struct {
 	leftMotor        *Motor
 	rightMotor       *Motor
 	currentDirection int
 }
 
-// NewMotorController creates a MotorController with the given motors.
 func NewMotorController(leftMotor, rightMotor *Motor) *MotorController {
 	return &MotorController{
 		leftMotor:        leftMotor,
@@ -25,7 +22,6 @@ func NewMotorController(leftMotor, rightMotor *Motor) *MotorController {
 	}
 }
 
-// SetDirection sets the robot's movement direction.
 func (mc *MotorController) SetDirection(direction int) {
 	mc.currentDirection = direction
 
@@ -53,14 +49,12 @@ func busyWait(loops int) {
 	}
 }
 
-// MoveForLoops moves in a direction for a specified number of loop iterations.
 func (mc *MotorController) MoveForLoops(direction int, loops int) {
 	mc.SetDirection(direction)
 	busyWait(loops)
 	mc.SetDirection(STOP)
 }
 
-// TurnForLoops turns the robot for a specified number of loop iterations.
 func (mc *MotorController) TurnForLoops(direction int, loops int) {
 	if direction != TURN_LEFT && direction != TURN_RIGHT {
 		return
@@ -70,7 +64,6 @@ func (mc *MotorController) TurnForLoops(direction int, loops int) {
 	mc.SetDirection(STOP)
 }
 
-// MoveRandomly moves the robot in a pseudo-random direction based on seed.
 func (mc *MotorController) MoveRandomly(seed uint8) {
 	direction := int(seed % 4)
 	if direction > TURN_RIGHT {

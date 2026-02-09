@@ -1,6 +1,5 @@
 package main
 
-// CalibrationModule handles sensor and motor calibration at startup.
 type CalibrationModule struct {
 	robot           *Robot
 	sensorModule    *SensorModule
@@ -8,7 +7,6 @@ type CalibrationModule struct {
 	calibrated      bool
 }
 
-// NewCalibrationModule creates a CalibrationModule with the given dependencies.
 func NewCalibrationModule(robot *Robot, sensorModule *SensorModule, motorController *MotorController) *CalibrationModule {
 	return &CalibrationModule{
 		robot:           robot,
@@ -18,12 +16,10 @@ func NewCalibrationModule(robot *Robot, sensorModule *SensorModule, motorControl
 	}
 }
 
-// IsCalibrated returns whether calibration has completed.
 func (cm *CalibrationModule) IsCalibrated() bool {
 	return cm.calibrated
 }
 
-// CalibrateSensors runs sensor calibration and logs baseline values.
 func (cm *CalibrationModule) CalibrateSensors() {
 	cm.robot.BlinkLED(2)
 	debugPrint("Starting sensor calibration...")
@@ -42,7 +38,6 @@ func (cm *CalibrationModule) CalibrateSensors() {
 	cm.calibrated = true
 }
 
-// CalibrateMotors tests each movement direction.
 func (cm *CalibrationModule) CalibrateMotors() {
 	cm.robot.BlinkLED(3)
 	debugPrint("Starting motor calibration...")
@@ -57,7 +52,6 @@ func (cm *CalibrationModule) CalibrateMotors() {
 	cm.robot.BeepLoops(5000)
 }
 
-// CalibrateComplete runs full sensor and motor calibration.
 func (cm *CalibrationModule) CalibrateComplete() {
 	debugPrint("Starting complete calibration...")
 	cm.CalibrateSensors()

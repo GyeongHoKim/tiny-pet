@@ -1,13 +1,11 @@
 package navlogic
 
-// Ultrasonic sensor constants.
 const (
 	MicrosecondsPerCm = 58
 	TimeoutDistance   = -1
 )
 
-// EchoCountToDistanceCm converts ultrasonic echo loop count to distance in cm.
-// Returns TimeoutDistance (-1) if echoCount is invalid.
+// EchoCountToDistanceCm converts echo loop count to distance in cm; returns TimeoutDistance (-1) if invalid.
 func EchoCountToDistanceCm(echoCount int) int {
 	if echoCount <= 0 {
 		return TimeoutDistance
@@ -15,7 +13,15 @@ func EchoCountToDistanceCm(echoCount int) int {
 	return echoCount / MicrosecondsPerCm
 }
 
-// IsWithinThreshold returns true if distance is positive and below threshold.
+// EchoMicrosecondsToDistanceCm converts echo pulse width (µs) to distance in cm; returns TimeoutDistance (-1) if invalid.
+func EchoMicrosecondsToDistanceCm(us int) int {
+	if us <= 0 {
+		return TimeoutDistance
+	}
+	return us / MicrosecondsPerCm
+}
+
+// IsWithinThreshold reports whether distance is valid and below threshold.
 func IsWithinThreshold(distance, threshold int) bool {
 	if distance == TimeoutDistance {
 		return false

@@ -1,9 +1,10 @@
-//go:build !bluepill
+//go:build bluepill
 
 package main
 
 import (
 	"machine"
+	"time"
 
 	"github.com/GyeongHoKim/tiny-pet/internal/navlogic"
 )
@@ -11,8 +12,10 @@ import (
 const (
 	OBSTACLE_DISTANCE_THRESHOLD = 20
 	EDGE_DETECTION_THRESHOLD    = 500
-	ULTRASONIC_TIMEOUT_LOOPS    = 10000
 )
+
+const bluepillLoopsPerMicrosecond = 4
+const bluepillUltrasonicTimeoutLoops = 50000
 
 // SensorModule reads ultrasonic (HC-SR04) and IR edge sensors.
 type SensorModule struct {
@@ -32,14 +35,13 @@ func NewSensorModule(ultraTrig, ultraEcho machine.Pin, irSensors *[IR_SENSOR_COU
 // ReadUltrasonicDistance returns distance in cm, or -1 on timeout.
 func (s *SensorModule) ReadUltrasonicDistance() int {
 	s.ultraTrig.High()
-	for i := 0; i < 160; i++ {
-	}
+	time.Sleep(10 * time.Microsecond)
 	s.ultraTrig.Low()
 
 	count := 0
 	for !s.ultraEcho.Get() {
 		count++
-		if count > ULTRASONIC_TIMEOUT_LOOPS {
+		if count > bluepillUltrasonicTimeoutLoops {
 			return -1
 		}
 	}
@@ -47,12 +49,13 @@ func (s *SensorModule) ReadUltrasonicDistance() int {
 	echoCount := 0
 	for s.ultraEcho.Get() {
 		echoCount++
-		if echoCount > ULTRASONIC_TIMEOUT_LOOPS {
+		if echoCount > bluepillUltrasonicTimeoutLoops {
 			return -1
 		}
 	}
 
-	return navlogic.EchoMicrosecondsToDistanceCm(echoCount)
+	us := echoCount / bluepillLoopsPerMicrosecond
+	return navlogic.EchoMicrosecondsToDistanceCm(us)
 }
 
 func (s *SensorModule) IsObstacleDetected() bool {

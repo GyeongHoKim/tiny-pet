@@ -4,7 +4,6 @@ import (
 	"github.com/GyeongHoKim/tiny-pet/internal/navlogic"
 )
 
-// Robot states (re-exported from navlogic).
 const (
 	IDLE_STATE               = navlogic.StateIdle
 	MOVING_STATE             = navlogic.StateMoving
@@ -13,14 +12,12 @@ const (
 	INTERACTING_STATE        = navlogic.StateInteracting
 )
 
-// Behavior modes.
 const (
 	RANDOM_WALK_MODE = iota
 	GUARD_MODE
 	INTERACTIVE_MODE
 )
 
-// NavigationModule handles robot decision-making and state transitions.
 type NavigationModule struct {
 	motorController *MotorController
 	sensorModule    *SensorModule
@@ -30,7 +27,6 @@ type NavigationModule struct {
 	loopCounter     uint8
 }
 
-// NewNavigationModule creates a NavigationModule with the given dependencies.
 func NewNavigationModule(motorController *MotorController, sensorModule *SensorModule) *NavigationModule {
 	return &NavigationModule{
 		motorController: motorController,
@@ -41,17 +37,14 @@ func NewNavigationModule(motorController *MotorController, sensorModule *SensorM
 	}
 }
 
-// SetBehaviorMode sets the robot's behavior mode.
 func (nm *NavigationModule) SetBehaviorMode(mode int) {
 	nm.behaviorMode = mode
 }
 
-// GetCurrentState returns the current navigation state.
 func (nm *NavigationModule) GetCurrentState() int {
 	return nm.currentState
 }
 
-// ProcessState processes sensor input and updates state accordingly.
 func (nm *NavigationModule) ProcessState() {
 	nm.loopCounter++
 
@@ -100,12 +93,10 @@ func (nm *NavigationModule) ProcessState() {
 	}
 }
 
-// Update runs one cycle of navigation logic.
 func (nm *NavigationModule) Update() {
 	nm.ProcessState()
 }
 
-// EmergencyStop immediately stops the robot and resets to idle state.
 func (nm *NavigationModule) EmergencyStop() {
 	nm.motorController.SetDirection(STOP)
 	nm.currentState = navlogic.StateIdle

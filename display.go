@@ -6,7 +6,6 @@ import (
 	"tinygo.org/x/drivers/ssd1306"
 )
 
-// Expression constants.
 const (
 	EXPR_NEUTRAL = iota
 	EXPR_HAPPY
@@ -16,13 +15,12 @@ const (
 	EXPR_BLINK
 )
 
-// Blink timing: ~4 seconds at 100ms loop interval = 40 ticks.
 const (
 	blinkInterval uint8 = 40
-	blinkDuration uint8 = 2 // blink lasts 2 ticks (~200ms)
+	blinkDuration uint8 = 2
 )
 
-// DisplayModule wraps the SSD1306 OLED driver and manages face expressions.
+// DisplayModule drives the SSD1306 OLED and face expressions.
 type DisplayModule struct {
 	device       ssd1306.Device
 	currentExpr  int
@@ -31,13 +29,11 @@ type DisplayModule struct {
 	isBlinking   bool
 }
 
-// NewDisplayModule initializes the SSD1306 OLED on the given I2C bus.
 func NewDisplayModule(bus *machine.I2C) *DisplayModule {
 	dm := &DisplayModule{
 		device:      ssd1306.NewI2C(bus),
 		currentExpr: EXPR_NEUTRAL,
 	}
-	// 128x32: 512-byte buffer to fit 2KB SRAM (Uno/Nano).
 	dm.device.Configure(ssd1306.Config{
 		Width:   128,
 		Height:  32,
@@ -47,7 +43,6 @@ func NewDisplayModule(bus *machine.I2C) *DisplayModule {
 	return dm
 }
 
-// ShowExpression clears the buffer, draws the given expression, and sends to display.
 func (dm *DisplayModule) ShowExpression(expr int) {
 	dm.currentExpr = expr
 	dm.device.ClearBuffer()
@@ -68,7 +63,6 @@ func (dm *DisplayModule) ShowExpression(expr int) {
 	dm.device.Display()
 }
 
-// ShowStateExpression maps a navigation state to an expression and displays it.
 func (dm *DisplayModule) ShowStateExpression(state int) {
 	var expr int
 	switch state {
@@ -88,15 +82,12 @@ func (dm *DisplayModule) ShowStateExpression(state int) {
 	dm.ShowExpression(expr)
 }
 
-// UpdateAnimation handles periodic blink animation.
-// Call this every main loop iteration (~100ms).
 func (dm *DisplayModule) UpdateAnimation() {
 	dm.animCounter++
 
 	if dm.isBlinking {
 		dm.blinkCounter++
 		if dm.blinkCounter >= blinkDuration {
-			// End blink: restore previous expression
 			dm.isBlinking = false
 			dm.blinkCounter = 0
 			dm.ShowExpression(dm.currentExpr)
@@ -106,13 +97,12 @@ func (dm *DisplayModule) UpdateAnimation() {
 
 	if dm.animCounter >= blinkInterval {
 		dm.animCounter = 0
-		// Start blink
 		savedExpr := dm.currentExpr
 		dm.isBlinking = true
 		dm.blinkCounter = 0
 		dm.device.ClearBuffer()
 		drawBlinkFace(&dm.device)
 		dm.device.Display()
-		dm.currentExpr = savedExpr // preserve so we restore after blink
+		dm.currentExpr = savedExpr
 	}
 }

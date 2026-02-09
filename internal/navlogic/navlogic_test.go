@@ -11,7 +11,7 @@ func TestNextStateFromSensors_Idle(t *testing.T) {
 		{false, false, StateMoving},
 		{true, false, StateObstacleAvoidance},
 		{false, true, StateEdgeAvoidance},
-		{true, true, StateEdgeAvoidance}, // edge takes precedence
+		{true, true, StateEdgeAvoidance},
 	}
 	for _, tt := range tests {
 		got := NextStateFromSensors(StateIdle, tt.obstacle, tt.edge)
@@ -31,7 +31,7 @@ func TestNextStateFromSensors_Moving(t *testing.T) {
 		{false, false, StateMoving},
 		{true, false, StateObstacleAvoidance},
 		{false, true, StateEdgeAvoidance},
-		{true, true, StateEdgeAvoidance}, // edge takes precedence
+		{true, true, StateEdgeAvoidance},
 	}
 	for _, tt := range tests {
 		got := NextStateFromSensors(StateMoving, tt.obstacle, tt.edge)

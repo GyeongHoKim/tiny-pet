@@ -2,14 +2,14 @@
 # Usage: make [target]. Run `make help` for targets.
 # Windows: assumes PowerShell (pwsh). Unix: sh/bash.
 
-.PHONY: build build-nano build-uno flash flash-unix flash-win flash-nano fmt tidy test run clean help
+.PHONY: build build-nano build-uno build-bluepill flash flash-unix flash-win flash-nano flash-bluepill fmt tidy test run clean help
 
-# Target board: arduino (Uno) or arduino-nano (Nano)
+# Target board: arduino (Uno), arduino-nano (Nano), or bluepill
 TARGET ?= arduino
-# Serial port for flash (e.g. /dev/cu.usbmodem14101 on macOS, COM3 on Windows)
 PORT ?=
 
 FIRMWARE := firmware.hex
+FIRMWARE_BLUEPILL := firmware_bluepill.elf
 
 # TinyGo flags for smaller firmware (https://tinygo.org/docs/guides/optimizing-binaries/)
 # -scheduler=none: no goroutines
@@ -59,6 +59,14 @@ flash-win:
 flash-nano: TARGET = arduino-nano
 flash-nano: flash
 
+# --- Blue Pill (STM32F103) ---
+build-bluepill:
+	go mod tidy
+	tinygo build $(TINYGO_FLAGS) -tags=bluepill -o $(FIRMWARE_BLUEPILL) -target=bluepill .
+
+flash-bluepill: build-bluepill
+	tinygo flash -target=bluepill -tags=bluepill .
+
 # --- Format & tidy ---
 fmt:
 	go fmt ./...
@@ -79,10 +87,10 @@ run:
 # Windows: pwsh. Unix: rm -f
 ifeq ($(OS),Windows_NT)
 clean:
-	-@pwsh -NoProfile -Command "Remove-Item -Force -ErrorAction SilentlyContinue '$(FIRMWARE)'"
+	-@pwsh -NoProfile -Command "Remove-Item -Force -ErrorAction SilentlyContinue '$(FIRMWARE)','$(FIRMWARE_BLUEPILL)'"
 else
 clean:
-	-rm -f $(FIRMWARE)
+	-rm -f $(FIRMWARE) $(FIRMWARE_BLUEPILL)
 endif
 
 help:
@@ -91,13 +99,15 @@ help:
 	@echo "Targets:"
 	@echo "  build, build-uno   Build for Arduino Uno (default), output: $(FIRMWARE)"
 	@echo "  build-nano         Build for Arduino Nano"
+	@echo "  build-bluepill     Build for STM32 Blue Pill, output: $(FIRMWARE_BLUEPILL)"
 	@echo "  flash              Flash Uno (PORT= auto-detected; on Windows uses pwsh, set PORT=COM3 if needed)"
 	@echo "  flash-nano         Flash Nano (same PORT= as flash)"
+	@echo "  flash-bluepill     Flash Blue Pill (ST-Link v2 + OpenOCD required)"
 	@echo "  fmt                Format Go code (go fmt + gofmt -s -w)"
 	@echo "  tidy               go mod tidy"
 	@echo "  test               Run unit tests (internal/navlogic)"
 	@echo "  run                Run in emulator (tinygo run, no board)"
-	@echo "  clean              Remove $(FIRMWARE)"
+	@echo "  clean              Remove firmware artifacts"
 	@echo "  help               This message"
 	@echo ""
 	@echo "Examples:"

@@ -8,21 +8,18 @@ import (
 
 var white = color.RGBA{R: 255, G: 255, B: 255, A: 255}
 
-// setHLine draws a horizontal line.
 func setHLine(dev *ssd1306.Device, x, y, w int16) {
 	for i := int16(0); i < w; i++ {
 		dev.SetPixel(x+i, y, white)
 	}
 }
 
-// setFillRect draws a filled rectangle.
 func setFillRect(dev *ssd1306.Device, x, y, w, h int16) {
 	for dy := int16(0); dy < h; dy++ {
 		setHLine(dev, x, y+dy, w)
 	}
 }
 
-// setFillCircle draws a filled circle using brute-force dx²+dy²≤r².
 func setFillCircle(dev *ssd1306.Device, cx, cy, r int16) {
 	for dy := -r; dy <= r; dy++ {
 		for dx := -r; dx <= r; dx++ {
@@ -33,7 +30,6 @@ func setFillCircle(dev *ssd1306.Device, cx, cy, r int16) {
 	}
 }
 
-// setCircle draws a circle outline using the midpoint algorithm.
 func setCircle(dev *ssd1306.Device, cx, cy, r int16) {
 	x := r
 	y := int16(0)
@@ -58,7 +54,6 @@ func setCircle(dev *ssd1306.Device, cx, cy, r int16) {
 	}
 }
 
-// Face layout for 128x32 (Uno/Nano 2KB SRAM).
 const (
 	eyeLeftX  = 40
 	eyeRightX = 88
@@ -67,14 +62,12 @@ const (
 	mouthY    = 24
 )
 
-// drawNeutralFace draws half-closed horizontal line eyes and a small straight mouth.
 func drawNeutralFace(dev *ssd1306.Device) {
 	setFillRect(dev, eyeLeftX-4, eyeY-1, 8, 2)
 	setFillRect(dev, eyeRightX-4, eyeY-1, 8, 2)
 	setFillRect(dev, mouthCX-5, mouthY, 10, 1)
 }
 
-// drawHappyFace draws round open eyes and a curved smile.
 func drawHappyFace(dev *ssd1306.Device) {
 	setFillCircle(dev, eyeLeftX, eyeY, 4)
 	setFillCircle(dev, eyeRightX, eyeY, 4)
@@ -85,7 +78,6 @@ func drawHappyFace(dev *ssd1306.Device) {
 	}
 }
 
-// drawSurprisedFace draws large circle-outline eyes and an O-shaped mouth.
 func drawSurprisedFace(dev *ssd1306.Device) {
 	setCircle(dev, eyeLeftX, eyeY, 5)
 	setCircle(dev, eyeLeftX, eyeY, 4)
@@ -95,7 +87,6 @@ func drawSurprisedFace(dev *ssd1306.Device) {
 	setCircle(dev, mouthCX, mouthY+1, 2)
 }
 
-// drawScaredFace draws large circle eyes with tiny pupils and a frown.
 func drawScaredFace(dev *ssd1306.Device) {
 	setCircle(dev, eyeLeftX, eyeY, 5)
 	setCircle(dev, eyeLeftX, eyeY, 4)
@@ -110,7 +101,6 @@ func drawScaredFace(dev *ssd1306.Device) {
 	}
 }
 
-// drawExcitedFace draws round eyes with sparkle crosses and a wide smile.
 func drawExcitedFace(dev *ssd1306.Device) {
 	setFillCircle(dev, eyeLeftX, eyeY, 4)
 	setFillCircle(dev, eyeRightX, eyeY, 4)
@@ -127,7 +117,6 @@ func drawExcitedFace(dev *ssd1306.Device) {
 	}
 }
 
-// drawBlinkFace draws thin closed-eye lines and a small mouth (for blink animation).
 func drawBlinkFace(dev *ssd1306.Device) {
 	setHLine(dev, eyeLeftX-4, eyeY, 8)
 	setHLine(dev, eyeRightX-4, eyeY, 8)

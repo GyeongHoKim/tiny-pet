@@ -14,9 +14,7 @@ func main() {
 	behaviorPatterns := NewBehaviorPatterns(robot.statusLed, robot.buzzer)
 	calibrationModule := NewCalibrationModule(robot, sensorModule, motorController)
 
-	machine.I2C0.Configure(machine.I2CConfig{
-		Frequency: 400000, // 400 KHz; SDA=A4, SCL=A5 are hardwired on ATmega328P
-	})
+	machine.I2C0.Configure(machine.I2CConfig{Frequency: 400000})
 	displayModule := NewDisplayModule(machine.I2C0)
 
 	robot.Initialize()

@@ -1,8 +1,6 @@
-// Package navlogic implements pure state transition logic for navigation.
-// It has no hardware dependencies and can be unit-tested with go test.
+// Package navlogic implements navigation state transitions with no hardware dependencies (unit-testable with go test).
 package navlogic
 
-// Navigation states.
 const (
 	StateIdle = iota
 	StateMoving
@@ -11,8 +9,7 @@ const (
 	StateInteracting
 )
 
-// NextStateFromSensors returns the next state based on sensor readings.
-// Edge detection takes precedence over obstacle detection.
+// NextStateFromSensors returns the next state from sensor inputs; edge takes precedence over obstacle.
 func NextStateFromSensors(currentState int, obstacleDetected, edgeDetected bool) int {
 	switch currentState {
 	case StateIdle, StateMoving:

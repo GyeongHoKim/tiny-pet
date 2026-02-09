@@ -1,11 +1,11 @@
 # Tiny Pet
 
-Small desk pet robot (TinyGo): random movement, obstacle avoidance (ultrasonic), edge avoidance (IR), OLED face expressions. Runs on Arduino Uno/Nano.
+Small desk pet robot (TinyGo): random movement, obstacle avoidance (ultrasonic), edge avoidance (IR), OLED face expressions. Runs on Arduino Uno/Nano or STM32 Blue Pill.
 
 ## Requirements
 
-- **Board:** Arduino Uno (`arduino`) or Nano (`arduino-nano`). 5 V logic.
-- **Software:** Go 1.20+, [TinyGo](https://tinygo.org/getting-started/install/), avrdude (for flash).
+- **Board:** Arduino Uno (`arduino`), Arduino Nano (`arduino-nano`), or STM32 Blue Pill (`bluepill`). Arduino: 5 V logic. Blue Pill: 3.3 V logic.
+- **Software:** Go 1.20+, [TinyGo](https://tinygo.org/getting-started/install/). For Arduino: avrdude (used by TinyGo flash). For Blue Pill: [OpenOCD](http://openocd.org/) and ST-Link v2 programmer.
 
 ## Features
 
@@ -21,6 +21,7 @@ Small desk pet robot (TinyGo): random movement, obstacle avoidance (ultrasonic),
 | Item | Note |
 |------|------|
 | Arduino Uno or Arduino Nano | Uno: target `arduino`. Nano: target `arduino-nano`. 5 V. |
+| STM32 Blue Pill (STM32F103C8) | Target `bluepill`. 3.3 V. Low-cost option; requires ST-Link v2 to flash. |
 
 ### Required
 | Component | Qty | Spec |
@@ -64,7 +65,21 @@ A4, A5  → SSD1306 OLED (I2C SDA, SCL). Hardware I2C on ATmega328P.
 D13, D8 → Optional: LED, Buzzer
 ```
 
-Pin constants: `hardware.go`. Thresholds: `sensors.go` (`OBSTACLE_DISTANCE_THRESHOLD`, `EDGE_DETECTION_THRESHOLD`).
+Pin constants: `hardware_arduino.go` (Uno/Nano) or `hardware_bluepill.go` (Blue Pill). Thresholds: `sensors.go` / `sensors_bluepill.go` (`OBSTACLE_DISTANCE_THRESHOLD`, `EDGE_DETECTION_THRESHOLD`).
+
+## Wiring (STM32 Blue Pill)
+
+```
+PA8, PA9   → Mini L298N IN1, IN2 (left motor)
+PA10, PA11 → Mini L298N IN3, IN4 (right motor)
+PA12, PB10 → Ultrasonic Trig, Echo (HC-SR04). Avoid PA13/PA14 (SWD).
+PA1, PA2   → IR edge sensors (ADC1, ADC2)
+PB7, PB6   → SSD1306 OLED I2C SDA, SCL (I2C0)
+PC13       → Status LED (onboard)
+PB15       → Buzzer
+```
+
+Flash: connect ST-Link v2 to Blue Pill SWD (SWIO, SWCLK, 3V3, GND), then `make flash-bluepill`. Install OpenOCD (e.g. `brew install openocd`) if needed.
 
 ## Build & flash
 
@@ -74,19 +89,22 @@ Use the [Makefile](Makefile) for build, flash, format, and tests. Run `make help
 |--------|-------------|
 | `make build` | Build for Arduino Uno → `firmware.hex` |
 | `make build-nano` | Build for Arduino Nano |
+| `make build-bluepill` | Build for STM32 Blue Pill → `firmware_bluepill.elf` |
 | `make flash` | Flash Uno to board (PORT auto-detected on macOS) |
 | `make flash-nano` | Flash Nano to board |
+| `make flash-bluepill` | Flash Blue Pill (ST-Link v2 + OpenOCD) |
 | `make fmt` | Format Go code |
 | `make tidy` | `go mod tidy` |
 | `make test` | Run unit tests |
 | `make run` | Run in emulator (no board) |
-| `make clean` | Remove `firmware.hex` |
+| `make clean` | Remove firmware artifacts |
 
 Examples:
 
 ```bash
 make build                    # Uno
 make build-nano flash-nano    # Nano: build then flash
+make build-bluepill flash-bluepill   # Blue Pill (ST-Link v2 connected)
 make flash PORT=/dev/cu.usbmodem14101   # macOS, set port explicitly
 make flash PORT=COM3                    # Windows
 ```
@@ -106,9 +124,9 @@ Wire → power 5 V → flash. On startup: short calibration (LED/beep). Then it 
 | Path | Description |
 |------|-------------|
 | `main.go` | Entry point, main loop, module wiring |
-| `hardware.go` | Pin constants, `Motor`, `Robot`, board init |
+| `hardware_arduino.go` / `hardware_bluepill.go` | Pin constants, `Motor`, `Robot`, board init (build tag selects) |
 | `motors.go` | `MotorController` — direction, speed, timed moves |
-| `sensors.go` | `SensorModule` — ultrasonic, IR, thresholds |
+| `sensors.go` / `sensors_bluepill.go` | `SensorModule` — ultrasonic, IR, thresholds (Blue Pill uses time-based ultrasonic) |
 | `navigation.go` | `NavigationModule` — state machine, behavior mode |
 | `behaviors.go` | `BehaviorPatterns` — LED and buzzer feedback |
 | `display.go` | `DisplayModule` — SSD1306 OLED face expressions |
@@ -137,8 +155,9 @@ make test
 
 ### Tuning
 
-- Obstacle/edge thresholds: `sensors.go` (`OBSTACLE_DISTANCE_THRESHOLD`, `EDGE_DETECTION_THRESHOLD`).
+- Obstacle/edge thresholds: `sensors.go` or `sensors_bluepill.go` (`OBSTACLE_DISTANCE_THRESHOLD`, `EDGE_DETECTION_THRESHOLD`).
 - Avoidance timings: `navigation.go`. Runtime adjustment via `CalibrationModule.AdjustThresholds()`.
+- Blue Pill: if ultrasonic distance is wrong, adjust `bluepillLoopsPerMicrosecond` in `sensors_bluepill.go`.
 
 ## License
 
