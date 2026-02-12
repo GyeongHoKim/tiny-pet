@@ -43,6 +43,10 @@ temp/
 # Log files
 *.log
 
+# KiCad generated
+*-drc.rpt
+*-erc.rpt
+
 # Debug and test files
 debug/
 test/

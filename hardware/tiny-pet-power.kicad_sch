@@ -1,0 +1,695 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "00000000-0000-0000-0000-000000000001")
+	(paper "A4")
+	(title_block
+		(title "Tiny Pet — 3.7V Battery Power Supply")
+		(date "2025-02-12")
+		(comment 1 "3.7V Li-ion to Protection to Boost 5V to optional LDO 3.3V. See hardware/README.md.")
+	)
+	(lib_symbols)
+	(text "J1: Battery 1S (BAT+, GND). J2: After protection (P+, GND). J3: 5V rail to Arduino/L298N/HC-SR04. J4: 3.3V rail to Blue Pill (optional). Boost and LDO between J2 and J3/J4."
+		(exclude_from_sim no)
+		(at 30 120 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "00000000-0000-0000-0000-000000000002")
+	)
+	(wire
+		(pts
+			(xy 32.54 50) (xy 77.46 50)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a1000001-0001-4001-8001-000000000001")
+	)
+	(wire
+		(pts
+			(xy 32.54 52.54) (xy 77.46 52.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a1000002-0001-4001-8001-000000000002")
+	)
+	(wire
+		(pts
+			(xy 82.54 50) (xy 127.46 50)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a1000003-0001-4001-8001-000000000003")
+	)
+	(wire
+		(pts
+			(xy 82.54 52.54) (xy 127.46 52.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a1000004-0001-4001-8001-000000000004")
+	)
+	(wire
+		(pts
+			(xy 132.54 50) (xy 179 50)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a1000005-0001-4001-8001-000000000005")
+	)
+	(wire
+		(pts
+			(xy 132.54 52.54) (xy 179 52.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a1000006-0001-4001-8001-000000000006")
+	)
+	(wire
+		(pts
+			(xy 132.54 100) (xy 179 100)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a1000007-0001-4001-8001-000000000007")
+	)
+	(wire
+		(pts
+			(xy 132.54 102.54) (xy 179 102.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a1000008-0001-4001-8001-000000000008")
+	)
+	(wire
+		(pts
+			(xy 127.46 52.54) (xy 127.46 102.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a100000a-0001-4001-8001-00000000000a")
+	)
+	(global_label "BAT+"
+		(shape input)
+		(at 52 47 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "b1000001-0001-4001-8001-000000000001")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 52 47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "5V"
+		(shape input)
+		(at 102 47 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "b1000002-0001-4001-8001-000000000002")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 102 47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "GND"
+		(shape input)
+		(at 52 55 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "b1000003-0001-4001-8001-000000000003")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 52 55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "3.3V"
+		(shape input)
+		(at 132 97 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "b1000004-0001-4001-8001-000000000004")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 132 97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x02")
+		(at 30 50 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c1000001-0001-4001-8001-000000000001")
+		(property "Reference" "J?"
+			(at 34 40 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Battery 1S"
+			(at 34 65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 30 50 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 30 50 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 30 50 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c1000002-0001-4001-8001-000000000001")
+		)
+		(pin "2"
+			(uuid "c1000003-0001-4001-8001-000000000001")
+		)
+		(instances
+			(project "tiny-pet-power"
+				(path "/00000000-0000-0000-0000-000000000001"
+					(reference "J?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x02")
+		(at 80 50 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c1000004-0001-4001-8001-000000000002")
+		(property "Reference" "J?"
+			(at 84 40 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Protection out"
+			(at 84 65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 80 50 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 80 50 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 80 50 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c1000005-0001-4001-8001-000000000002")
+		)
+		(pin "2"
+			(uuid "c1000006-0001-4001-8001-000000000002")
+		)
+		(instances
+			(project "tiny-pet-power"
+				(path "/00000000-0000-0000-0000-000000000001"
+					(reference "J?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x02")
+		(at 130 50 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c1000007-0001-4001-8001-000000000003")
+		(property "Reference" "J?"
+			(at 134 40 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "5V out"
+			(at 134 65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 130 50 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 130 50 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 130 50 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c1000008-0001-4001-8001-000000000003")
+		)
+		(pin "2"
+			(uuid "c1000009-0001-4001-8001-000000000003")
+		)
+		(instances
+			(project "tiny-pet-power"
+				(path "/00000000-0000-0000-0000-000000000001"
+					(reference "J?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x02")
+		(at 130 100 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c100000a-0001-4001-8001-000000000004")
+		(property "Reference" "J?"
+			(at 134 90 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "3.3V out"
+			(at 134 115 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 130 100 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 130 100 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 130 100 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c100000b-0001-4001-8001-000000000004")
+		)
+		(pin "2"
+			(uuid "c100000c-0001-4001-8001-000000000004")
+		)
+		(instances
+			(project "tiny-pet-power"
+				(path "/00000000-0000-0000-0000-000000000001"
+					(reference "J?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 180 48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c100000d-0001-4001-8001-000000000005")
+		(property "Reference" "#PWR?"
+			(at 180 38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "5V"
+			(at 180 58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 180 48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 180 48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 180 48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c100000e-0001-4001-8001-000000000005")
+		)
+		(instances
+			(project "tiny-pet-power"
+				(path "/00000000-0000-0000-0000-000000000001"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 180 53.54 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c100000f-0001-4001-8001-000000000006")
+		(property "Reference" "#PWR?"
+			(at 180 43.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 180 63.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 180 53.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 180 53.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 180 53.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c1000010-0001-4001-8001-000000000006")
+		)
+		(instances
+			(project "tiny-pet-power"
+				(path "/00000000-0000-0000-0000-000000000001"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 180 98 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c1000011-0001-4001-8001-000000000007")
+		(property "Reference" "#PWR?"
+			(at 180 88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "3.3V"
+			(at 180 108 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 180 98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 180 98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 180 98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c1000012-0001-4001-8001-000000000007")
+		)
+		(instances
+			(project "tiny-pet-power"
+				(path "/00000000-0000-0000-0000-000000000001"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 180 103.54 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c1000013-0001-4001-8001-000000000008")
+		(property "Reference" "#PWR?"
+			(at 180 93.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 180 113.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 180 103.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 180 103.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 180 103.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c1000014-0001-4001-8001-000000000008")
+		)
+		(instances
+			(project "tiny-pet-power"
+				(path "/00000000-0000-0000-0000-000000000001"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

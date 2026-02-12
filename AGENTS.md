@@ -41,6 +41,10 @@ main.go → Robot → SensorModule, MotorController → NavigationModule → Beh
 
 4. **Debug build tag**: `debug_debug.go` and `debug_release.go` provide `debugPrint()`. Release builds (default) use a no-op to save flash. Build with `-tags=debug` for serial output during development.
 
+## Power (battery)
+
+For desk use without USB: 3.7V Li-ion → 1S protection → 5V boost; 3.3V from 5V via LDO when using Blue Pill. KiCad power schematic/PCB in `hardware/` (`tiny-pet-power.kicad_pro`). Verify with `mcp_kicad_validate_project` and `kicad-cli pcb drc hardware/tiny-pet-power.kicad_pcb`.
+
 ## Key Constants
 
 - **Thresholds** (`sensors.go` / `sensors_bluepill.go`): `OBSTACLE_DISTANCE_THRESHOLD` (cm), `EDGE_DETECTION_THRESHOLD` (ADC value)

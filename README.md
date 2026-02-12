@@ -37,7 +37,11 @@ Small desk pet robot (TinyGo): random movement, obstacle avoidance (ultrasonic),
 | Ultrasonic distance sensor | 1   | HC-SR04 or compatible. Trig + Echo (digital).                                              |
 | IR sensors (analog)        | 2   | Analog output to A1–A2 (front). Lower ADC = edge (e.g. TCRT5000-style).                    |
 | SSD1306 OLED display       | 1   | I2C (addr 0x3C). A4 (SDA), A5 (SCL). See **Recommended display** below.                    |
-| Power supply               | 1   | 5 V for Uno/Nano (USB or regulated). For battery: step-up to 5 V or USB power bank.        |
+| Power supply (USB/adapter) | 1   | 5 V for Uno/Nano (USB or regulated adapter). Alternative: battery stack below.               |
+| 3.7V Li-ion battery (1S)   | 1   | For battery operation (desk roaming). e.g. 18650, 14500, or pouch.                         |
+| 1S protection module       | 1   | Use with battery. Over-discharge/overcharge/short protection (B+/B-/P+/P-).                |
+| 5V boost converter         | 1   | 3.x V → 5V (e.g. MT3608). Input/output capacitors recommended.                             |
+| 5V→3.3V LDO (optional)     | 1   | For Blue Pill or 3.3V peripherals (e.g. AMS1117-3.3).                                      |
 
 ### Optional
 
